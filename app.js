@@ -3,7 +3,6 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var multer = require('multer');
 var passport = require('passport');
 var session = require('express-session');
 var flash = require('connect-flash');
@@ -18,32 +17,10 @@ var http = require('http').Server(app);
 var port = process.env.PORT || 8080;
 
 var io = require('socket.io')(http);
-/*io.on('connection', function(socket) {
-  socket.on('chat message', function(msg) {
-    io.emit('chat message', msg);
-  });
-});*/
 
+//load chat model
 var Chat = require('./models/Chat');
 
-
-
-
-
-
-//multer configuration
-//destination path
-//n
-//rename file
-var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'public/files/')
-  },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + '_' + file.originalname)
-  }
-});
-var upload = multer({ storage: storage });
 
 //view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,6 +31,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(flash());
 
 //static path
 app.use(express.static(path.join(__dirname, 'public')));
@@ -70,10 +48,9 @@ app.use(session({
 require('./config/passport')(passport); // pass passport for configuration
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
 
 //load our routes
-require('./http/routes')(app, upload, passport);
+require('./http/routes')(app, passport);
 
 //chat api
 app.get('/get/chat', function(req, res) {

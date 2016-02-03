@@ -2,7 +2,7 @@ var Index = require('../routes/index');
 var Register = require('../routes/register');
 var Login = require('../routes/login');
 
-module.exports = function(app, upload, passport, io) {
+module.exports = function(app, passport) {
 
 	app.get('/', isLoggedIn, Index.home);
 
