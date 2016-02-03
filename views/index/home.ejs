@@ -1,0 +1,88 @@
+<%- include layouts/header.ejs %>
+
+<div class="container">
+    <div class="row pad-top pad-bottom">
+
+
+        <div class=" col-lg-6 col-md-6 col-sm-6">
+            <div class="chat-box-div">
+                <div class="chat-box-head">
+                    Chat Application
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <span class="fa fa-cogs"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#"><span class="fa fa-map-marker">&nbsp;<%= userAuth.local.username %></a></li>
+                                <li><a href="/logout"><span class="fa fa-circle-o-notch"></span>&nbsp;Logout</a></li>
+                            </ul>
+                        </div>
+                </div>
+
+                <div class="panel-body chat-box-main" id="messages">
+
+                
+
+                    
+                <hr class="hr-clas" />
+                
+                </div>
+					
+
+					<div class="chat-box-footer">
+						<form>
+						    <div class="input-group">
+						    	<input type="hidden" name="username" value="<%= userAuth.local.username %>">
+						        <input type="text" id="m" autocomplete="off" name="content" class="form-control" placeholder="Enter Text Here...">
+						        <span class="input-group-btn">
+						            <button class="btn btn-info" type="submit">SEND</button>
+						        </span>
+						    </div>
+					    </form>
+					</div>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+    </div>
+</div>
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var socket = io();
+
+	$('form').submit(function() {
+		/*socket.emit('chat message', $("form").serialize());
+		$('#m').val('');
+		return false;*/
+		var data = $("form").serialize();
+		//console.log(data);
+		$('form')[0].reset(); 
+		$.ajax({
+		  type: "POST",
+		  url: '/store/chat/',
+		  data: data,
+		  success: function(data){ 
+            console.log(data);
+          }
+		});
+		event.preventDefault();
+	});
+
+
+	socket.on('chat message', function(msg) {
+		console.log(msg);
+		$('#messages').append($('<div class="chat-box-left" id="content-chat">').text(msg.content));
+		$('#messages').append($('<p style="margin-left:45px; margin-top:15px;">').text(msg.username));
+	});
+});
+
+	
+</script>
+
+<%- include layouts/footer.ejs %>
