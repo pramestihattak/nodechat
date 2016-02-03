@@ -75,9 +75,18 @@ app.use(flash());
 //load our routes
 require('./http/routes')(app, upload, passport);
 
+//chat api
+app.get('/get/chat', function(req, res) {
+  Chat.find(function(err, data) {
+    if (err) {
+      console.log(err);
+    }
+    res.send(data); 
+  }); 
+});
 app.post('/store/chat', function(req, res) {
   Chat.create({
-    username: req.body.username,
+    fullname: req.body.fullname,
     content: req.body.content
   }, function(err, chat) {
     if (err) {
@@ -88,6 +97,8 @@ app.post('/store/chat', function(req, res) {
     }
   });
 });
+
+
 
 // error handlers
 // development error handler

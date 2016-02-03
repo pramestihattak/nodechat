@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 var bcrypt   = require('bcrypt-nodejs')
 
 var chatSchema = new Schema({
-	username: String,
+	fullname: String,
 	content: String
 });
 

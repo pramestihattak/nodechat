@@ -14,7 +14,7 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#"><span class="fa fa-map-marker">&nbsp;<%= userAuth.local.username %></a></li>
+                                <li><a href="#"><span class="fa fa-map-marker">&nbsp;<%= userAuth.local.fullname %></a></li>
                                 <li><a href="/logout"><span class="fa fa-circle-o-notch"></span>&nbsp;Logout</a></li>
                             </ul>
                         </div>
@@ -25,7 +25,7 @@
                 
 
                     
-                <hr class="hr-clas" />
+                	<hr class="hr-clas" />
                 
                 </div>
 					
@@ -33,7 +33,7 @@
 					<div class="chat-box-footer">
 						<form>
 						    <div class="input-group">
-						    	<input type="hidden" name="username" value="<%= userAuth.local.username %>">
+						    	<input type="hidden" name="fullname" value="<%= userAuth.local.fullname %>">
 						        <input type="text" id="m" autocomplete="off" name="content" class="form-control" placeholder="Enter Text Here...">
 						        <span class="input-group-btn">
 						            <button class="btn btn-info" type="submit">SEND</button>
@@ -56,19 +56,29 @@
 $(document).ready(function() {
 	var socket = io();
 
+	$.ajax({
+	  url: '/get/chat',
+	  success: function(data) {
+	  	console.log(data);
+
+	  	$.each(data, function( index, value ) {
+	  	 	console.log(value);
+	  	 	$('#messages').append($('<div class="chat-box-left" id="content-chat">').text(value.content));
+	  	 	$('#messages').append($('<p style="margin-left:45px; margin-top:15px;">').text(value.fullname));
+	  	});
+	  }
+	});
+
 	$('form').submit(function() {
-		/*socket.emit('chat message', $("form").serialize());
-		$('#m').val('');
-		return false;*/
+
 		var data = $("form").serialize();
-		//console.log(data);
 		$('form')[0].reset(); 
 		$.ajax({
 		  type: "POST",
 		  url: '/store/chat/',
 		  data: data,
 		  success: function(data){ 
-            console.log(data);
+		  	console.log(data);
           }
 		});
 		event.preventDefault();
@@ -78,7 +88,7 @@ $(document).ready(function() {
 	socket.on('chat message', function(msg) {
 		console.log(msg);
 		$('#messages').append($('<div class="chat-box-left" id="content-chat">').text(msg.content));
-		$('#messages').append($('<p style="margin-left:45px; margin-top:15px;">').text(msg.username));
+		$('#messages').append($('<p style="margin-left:45px; margin-top:15px;">').text(msg.fullname));
 	});
 });
 
