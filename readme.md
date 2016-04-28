@@ -1,6 +1,6 @@
 ## Nodechat
 
-Chating Application using Node.js, Express.js, MongoDB and Socket.IO
+Chatting Application using Node.js, Express.js, MongoDB and Socket.IO
 
 # Installation
 
